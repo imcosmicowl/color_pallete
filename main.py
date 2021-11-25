@@ -147,27 +147,29 @@ def append_color_pallete(original_image, color_pallete, output_file):
     total_width = og_width
     total_height = og_height + pallete_height + (height_offset * 2)
 
-    combined_img = Image.new('RGB', (total_width, total_height), (255, 255, 255))
+    combined_img = Image.new('RGB', (total_width, total_height), (0, 0, 0))
 
+    starting_point_to_paste = round((og_width - pallete_width)/2)
     combined_img.paste(og_img, (0, 0))
-    combined_img.paste(pallete_img, (0, og_height + height_offset))
+    combined_img.paste(pallete_img, (starting_point_to_paste, og_height + height_offset))
 
     combined_img.save(output_file)
 
 
 def pallete_to_img(palette, output_file, input_img):
-
     h, w, _ = cv2.imread(input_img).shape
-    pallete_w = round(w*0.95)
-    pallete_h = round(h*1/5)
-    color_pallete_img = np.zeros((pallete_h,pallete_w,3))
-    square_w = round(pallete_w/args.num_colors)
+    pallete_w = round(w * 0.95)
+    pallete_h = round(h * 1 / 5)
+    color_pallete_img = np.zeros((pallete_h, pallete_w, 3))
+    square_w = round(pallete_w / args.num_colors)
     ii = 0
     for color in palette:
-        cv2.rectangle(color_pallete_img, (ii*square_w,0), ((ii+1)*square_w, pallete_h), tuple(reversed(color)), -1)
+        cv2.rectangle(color_pallete_img, (ii * square_w, 0), ((ii + 1) * square_w, pallete_h), tuple(reversed(color)),
+                      -1)
         ii += 1
 
     cv2.imwrite(output_file, color_pallete_img)
+
 
 def create_pallete(filename, num_colors, display_color=False):
     file_path = filename.split('/')
