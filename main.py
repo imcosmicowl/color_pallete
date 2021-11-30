@@ -1,15 +1,10 @@
-import os
-
-import numpy as np
-from PIL import Image, ImageFont, ImageDraw
-import matplotlib.pyplot as plt
-from scipy import cluster
-import pandas as pd
-import math
-import colorsys
 import argparse
-from colorthief import ColorThief
+import math
+
 import cv2
+import numpy as np
+from PIL import Image
+from colorthief import ColorThief
 
 """
 Parser management
@@ -19,7 +14,6 @@ parser = argparse.ArgumentParser(description="Color palette extractor",
 
 parser.add_argument('--path', type=str, help='path to img or folder with imgs')
 parser.add_argument('--num_colors', '-nc', type=int, help='number of colors to be extracted')
-parser.add_argument('--text', '-t', default=False, required=False)
 
 args = parser.parse_args()
 
@@ -73,7 +67,7 @@ def pallete_to_img(palette, output_file, input_img):
     cv2.imwrite(output_file, color_pallete_img)
 
 
-def create_pallete(filename, num_colors, display_color=False):
+def create_pallete(filename, num_colors):
     file_path = filename.split('/')
     file_prefix = ''
     file_split = ''
@@ -97,10 +91,10 @@ def get_hex_color(color):
     return '#%02x%02x%02x' % color
 
 
-def main(path, num_colors, text):
-    create_pallete(path, int(num_colors), text)
+def main(path, num_colors):
+    create_pallete(path, int(num_colors))
 
 
 if __name__ == '__main__':
     # pylint: disable=no-value-for-parameter
-    main(args.path, args.num_colors, args.text)
+    main(args.path, args.num_colors)
