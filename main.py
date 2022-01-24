@@ -1,5 +1,7 @@
 import argparse
 import math
+from os import listdir
+from os.path import isfile, join
 
 import cv2
 import numpy as np
@@ -67,7 +69,7 @@ def pallete_to_img(palette, output_file, input_img):
     cv2.imwrite(output_file, color_pallete_img)
 
 
-def create_pallete(filename, num_colors):
+def create_pallete(filename, num_colors, abs_path):
     file_path = filename.split('/')
     file_prefix = ''
     file_split = ''
@@ -82,9 +84,9 @@ def create_pallete(filename, num_colors):
 
     output_palette = file_prefix + file_split[0] + '_palette.' + file_split[1]
     output_combined = file_prefix + file_split[0] + '_with_palette.' + file_split[1]
-    palette_list = get_color_pallete(filename, num_colors)
-    pallete_to_img(palette_list, output_palette, filename)
-    append_color_pallete(filename, output_palette, output_combined)
+    palette_list = get_color_pallete(join(abs_path, filename), num_colors)
+    pallete_to_img(palette_list, output_palette, join(abs_path, filename))
+    append_color_pallete(join(abs_path, filename), output_palette, output_combined)
 
 
 def get_hex_color(color):
@@ -92,9 +94,14 @@ def get_hex_color(color):
 
 
 def main(path, num_colors):
-    create_pallete(path, int(num_colors))
+
+    onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
+
+    for file in onlyfiles:
+        create_pallete(file, int(num_colors), path)
 
 
 if __name__ == '__main__':
     # pylint: disable=no-value-for-parameter
+    # TODO store the output to desired folder, allow to select whether to store pallet or not
     main(args.path, args.num_colors)
